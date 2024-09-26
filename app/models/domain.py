@@ -4,14 +4,16 @@ from sqlalchemy.sql import func
 
 Base = declarative_base()
 
+
 class Beer(Base):
     __tablename__ = "beers"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True) # I want to use this as a search key
+    name = Column(String, unique=True, index=True)  # I want to use this as a search key
     price = Column(Float)
     quantity = Column(Integer)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 
 class Order(Base):
     __tablename__ = "orders"
@@ -24,6 +26,7 @@ class Order(Base):
     discounts = Column(Float, default=0)
     rounds = relationship("Round", back_populates="order")
 
+
 class Round(Base):
     __tablename__ = "rounds"
 
@@ -33,6 +36,7 @@ class Round(Base):
     order = relationship("Order", back_populates="rounds")
     items = relationship("RoundItem")
 
+
 class RoundItem(Base):
     __tablename__ = "round_items"
 
@@ -40,6 +44,7 @@ class RoundItem(Base):
     name = Column(String)
     quantity = Column(Integer)
     round_id = Column(Integer, ForeignKey("rounds.id"))
+
 
 class Promotion(Base):
     __tablename__ = "promotions"

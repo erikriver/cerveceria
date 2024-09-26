@@ -3,6 +3,7 @@ from app.models.domain import Beer
 from app.models.schemas import StockSchema, BeerSchema, BeerUpdateSchema
 from datetime import datetime
 
+
 class StockRepository:
     def __init__(self, db: Session):
         self.db = db
@@ -11,7 +12,7 @@ class StockRepository:
         beers = self.db.query(Beer).all()
         return StockSchema(
             last_updated=datetime.now(),
-            beers=[BeerSchema(name=b.name, price=b.price, quantity=b.quantity) for b in beers]
+            beers=[BeerSchema(name=b.name, price=b.price, quantity=b.quantity) for b in beers],
         )
 
     def update_stock(self, beer_name: str, quantity_change: int) -> None:
