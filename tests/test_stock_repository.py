@@ -37,6 +37,14 @@ def test_update_stock(stock_repository, mock_db_session):
     mock_db_session.commit.assert_called_once()
 
 
+def test_update_stock_beer_not_found(stock_repository, mock_db_session):
+    mock_db_session.query.return_value.filter.return_value.first.return_value = None
+
+    stock_repository.update_stock("NonexistentBeer", -2)
+
+    mock_db_session.commit.assert_not_called()
+
+
 def test_update_beer(stock_repository, mock_db_session):
     mock_beer = Mock(spec=Beer)
     mock_beer.price = 100
@@ -52,3 +60,12 @@ def test_update_beer(stock_repository, mock_db_session):
     mock_db_session.commit.assert_called_once()
     mock_db_session.refresh.assert_called_once_with(mock_beer)
 
+def test_update_beer_not_found(stock_repository, mock_db_session):
+    mock_db_session.query.return_value.filter.return_value.first.return_value = None
+
+    update_data = BeerUpdateSchema(price=120, quantity=48)
+    result = stock_repository.update_beer("NonexistentBeer", update_data)
+
+    assert result is None
+    mock_db_session.commit.assert_not_called()
+    mock_db_session.refresh.assert_not_called()
