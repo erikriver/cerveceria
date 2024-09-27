@@ -8,7 +8,7 @@ Base = declarative_base()
 class Beer(Base):
     __tablename__ = "beers"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, unique=True, index=True)  # I want to use this as a search key
     price = Column(Float)
     quantity = Column(Integer)
@@ -18,7 +18,7 @@ class Beer(Base):
 class Order(Base):
     __tablename__ = "orders"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     created = Column(DateTime)
     paid = Column(Boolean, default=False)
     subtotal = Column(Float, default=0)
@@ -30,7 +30,7 @@ class Order(Base):
 class Round(Base):
     __tablename__ = "rounds"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     created = Column(DateTime)
     order_id = Column(Integer, ForeignKey("orders.id"))
     order = relationship("Order", back_populates="rounds")
@@ -40,7 +40,7 @@ class Round(Base):
 class RoundItem(Base):
     __tablename__ = "round_items"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
     quantity = Column(Integer)
     round_id = Column(Integer, ForeignKey("rounds.id"))
