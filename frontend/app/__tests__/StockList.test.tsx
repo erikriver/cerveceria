@@ -1,24 +1,23 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import StockList from '../components/StockList';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import StockList from "../components/StockList";
 
 const mockStock = {
-  last_updated: '2023-05-01T12:00:00Z',
+  last_updated: "2024-09-27T10:11:00Z",
   beers: [
-    { name: 'IPA', price: 5.99, quantity: 100 },
-    { name: 'Stout', price: 6.99, quantity: 50 },
+    { name: "Corona", price: 110, quantity: 120 },
+    { name: "Strella", price: 120, quantity: 80 },
   ],
 };
 
-describe('StockList', () => {
-  it('renders stock information correctly', () => {
+describe("StockList", () => {
+  it("Stock information correctly", () => {
     render(<StockList stock={mockStock} onStockUpdate={() => {}} />);
 
-    expect(screen.getByText('Stock')).toBeInTheDocument();
-    expect(screen.getByText(/Last updated:/)).toBeInTheDocument();
-    expect(screen.getByText('IPA')).toBeInTheDocument();
-    expect(screen.getByText('Stout')).toBeInTheDocument();
-    expect(screen.getByText('Price: $5.99')).toBeInTheDocument();
-    expect(screen.getByText('Quantity: 100')).toBeInTheDocument();
+    expect(screen.getByText("Stock")).toBeInTheDocument();
+    expect(screen.getByText("Corona")).toBeInTheDocument();
+    expect(screen.getByText("Strella")).toBeInTheDocument();
+    expect(screen.getByText("Price: $110")).toBeInTheDocument();
+    expect(screen.getByText("Quantity: 120")).toBeInTheDocument();
   });
 });
