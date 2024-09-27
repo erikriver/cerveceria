@@ -32,7 +32,7 @@ def sample_beers(db_session):
 
 @pytest.fixture
 def sample_order(db_session):
-    order = Order(created=datetime.now(), paid=False, subtotal=460, taxes=87.4, discounts=0)
+    order = Order(created=datetime.now(), paid=False, subtotal=460, taxes=73.6, discounts=0)
     db_session.add(order)
     db_session.commit()
 
