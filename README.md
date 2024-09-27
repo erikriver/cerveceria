@@ -20,3 +20,22 @@ This project implements a FastAPI service and frontend for a brewery, allowing c
    ```
    pip install -r requirements.txt
    ```
+
+4. Run the service:
+   ```
+   uvicorn app.main:app --reload
+   ```
+
+## Makefile
+
+There is a Makefile that simplify the last steps:
+
+```
+make venv      : Create virtual environment
+make install   : Install dependencies
+make run       : Run the application
+make clean     : Clean up virtual environment and cache files
+make test      : Run tests
+make init-db   : Initialize the database
+make all       : Create venv and install dependencies
+```
