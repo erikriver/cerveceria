@@ -68,7 +68,6 @@ npm start
 
 - `pages/`: Contains the main pages of the application.
 - `components/`: Reusable React components.
-- `styles/`: Global styles and Tailwind CSS configuration.
+- `lib/`: Reusable Typescript libraries.
 - `__tests__/`: Unit tests for components.
-- `types/`: TypeScript type definitions.
 
