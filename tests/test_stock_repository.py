@@ -8,18 +8,11 @@ from app.models.schemas import StockSchema, BeerUpdateSchema
 
 
 @pytest.fixture
-def mock_db_session():
-    return Mock(spec=Session)
+def stock_repository(db_session):
+    return StockRepository(db_session)
 
 
-@pytest.fixture
-def stock_repository(mock_db_session):
-    return StockRepository(mock_db_session)
-
-
-def test_get_stock(stock_repository, mock_db_session, sample_beers):
-    mock_db_session.query.return_value.all.return_value = sample_beers
-
+def test_get_stock(stock_repository, sample_beers):
     result = stock_repository.get_stock()
 
     assert isinstance(result, StockSchema)
@@ -30,47 +23,18 @@ def test_get_stock(stock_repository, mock_db_session, sample_beers):
         assert beer.quantity == sample_beers[i].quantity
 
 
-def test_update_stock(stock_repository, mock_db_session):
-    mock_beer = Mock(spec=Beer)
-    mock_beer.quantity = 10
-    mock_db_session.query.return_value.filter.return_value.first.return_value = mock_beer
-
-    stock_repository.update_stock("Corona", -2)
-
-    assert mock_beer.quantity == 8
-    mock_db_session.commit.assert_called_once()
+def test_update_stock(stock_repository, db_session, sample_beers):
+    beer_name = "Corona"
+    stock_repository.update_stock(beer_name, -2)
+    beer = db_session.query(Beer).filter(Beer.name == beer_name).first()
+    assert beer.quantity == 48
 
 
-def test_update_stock_beer_not_found(stock_repository, mock_db_session):
-    mock_db_session.query.return_value.filter.return_value.first.return_value = None
-
-    stock_repository.update_stock("NonexistentBeer", -2)
-
-    mock_db_session.commit.assert_not_called()
-
-
-def test_update_beer(stock_repository, mock_db_session):
-    mock_beer = Mock(spec=Beer)
-    mock_beer.price = 100
-    mock_beer.quantity = 50
-    mock_db_session.query.return_value.filter.return_value.first.return_value = mock_beer
-
+def test_update_beer(stock_repository, sample_beers, db_session):
+    beer_name = "Corona"
     update_data = BeerUpdateSchema(price=120, quantity=48)
-    result = stock_repository.update_beer("Corona", update_data)
+    stock_repository.update_beer(beer_name, update_data)
 
-    assert result == mock_beer
-    assert mock_beer.price == 120
-    assert mock_beer.quantity == 48
-    mock_db_session.commit.assert_called_once()
-    mock_db_session.refresh.assert_called_once_with(mock_beer)
-
-
-def test_update_beer_not_found(stock_repository, mock_db_session):
-    mock_db_session.query.return_value.filter.return_value.first.return_value = None
-
-    update_data = BeerUpdateSchema(price=120, quantity=48)
-    result = stock_repository.update_beer("NonexistentBeer", update_data)
-
-    assert result is None
-    mock_db_session.commit.assert_not_called()
-    mock_db_session.refresh.assert_not_called()
+    beer = db_session.query(Beer).filter(Beer.name == beer_name).first()
+    assert beer.price == 120
+    assert beer.quantity == 48

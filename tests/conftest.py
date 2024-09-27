@@ -5,6 +5,7 @@ from app.models.domain import Beer, Order, Round, RoundItem
 from app.models.domain import Base
 from app.core.config import SessionLocal, engine
 
+
 @pytest.fixture(scope="function")
 def db_session():
     Base.metadata.create_all(bind=engine)
@@ -28,35 +29,26 @@ def sample_beers(db_session):
 
     return beers
 
+
 @pytest.fixture
 def sample_order(db_session):
-    order = Order(
-        created=datetime.now(),
-        paid=False,
-        subtotal=460,
-        taxes=87.4,
-        discounts=0
-    )
+    order = Order(created=datetime.now(), paid=False, subtotal=460, taxes=87.4, discounts=0)
     db_session.add(order)
     db_session.commit()
 
     return order
 
+
 @pytest.fixture
 def sample_rounds(db_session, sample_order):
-    round1 = Round(
-        created=datetime.now() - timedelta(minutes=30),
-        order_id=sample_order.id
-    )
-    round2 = Round(
-        created=datetime.now() - timedelta(minutes=15),
-        order_id=sample_order.id
-    )
+    round1 = Round(created=datetime.now() - timedelta(minutes=30), order_id=sample_order.id)
+    round2 = Round(created=datetime.now() - timedelta(minutes=15), order_id=sample_order.id)
 
     db_session.add_all([round1, round2])
     db_session.commit()
 
     return [round1, round2]
+
 
 @pytest.fixture
 def sample_round_items(db_session, sample_rounds):
