@@ -1,5 +1,5 @@
-import React from 'react';
-import { Stock, Beer, updateBeer } from '../lib/api';
+import React from "react";
+import { Stock, Beer, updateBeer } from "../lib/api";
 
 interface StockListProps {
   stock: Stock;
@@ -12,7 +12,7 @@ const StockList: React.FC<StockListProps> = ({ stock, onStockUpdate }) => {
       await updateBeer(beer.name, beer.price, beer.quantity);
       onStockUpdate();
     } catch (error) {
-      console.error('Failed to update beer:', error);
+      console.error("Failed on update:", error);
     }
   };
 
@@ -29,7 +29,9 @@ const StockList: React.FC<StockListProps> = ({ stock, onStockUpdate }) => {
           {stock.beers.map((beer) => (
             <li key={beer.name} className="px-4 py-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-indigo-600">{beer.name}</div>
+                <div className="text-sm font-medium text-indigo-600">
+                  {beer.name}
+                </div>
                 <div className="ml-2 flex-shrink-0 flex">
                   <button
                     onClick={() => handleUpdate(beer)}
