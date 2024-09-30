@@ -1,3 +1,4 @@
+// components/StockList.tsx
 import React from 'react';
 import { useAtom } from 'jotai';
 import { stockAtom } from '../lib/atoms';
@@ -6,9 +7,15 @@ import { updateBeer } from '../lib/api';
 const StockList: React.FC = () => {
   const [stock, setStock] = useAtom(stockAtom);
 
-  const handleUpdateBeer = async (name: string, field: 'price' | 'quantity', value: number) => {
+  const handleUpdateBeer = async (name: string, field: 'price' | 'quantity', value: string) => {
+    const numericValue = parseFloat(value);
+    if (isNaN(numericValue)) {
+      console.error('Invalid input: Not a number');
+      return;
+    }
+
     try {
-      const updatedBeer = await updateBeer(name, { [field]: value });
+      const updatedBeer = await updateBeer(name, { [field]: numericValue });
       setStock(prev => {
         if (!prev) return prev;
         const updatedBeers = prev.beers.map(beer => 
@@ -33,14 +40,15 @@ const StockList: React.FC = () => {
           <div className="mt-2">
             <input
               type="number"
+              step="1"
               value={beer.price}
-              onChange={(e) => handleUpdateBeer(beer.name, 'price', Number(e.target.value))}
+              onChange={(e) => handleUpdateBeer(beer.name, 'price', e.target.value)}
               className="w-20 mr-2 p-1 border rounded"
             />
             <input
               type="number"
               value={beer.quantity}
-              onChange={(e) => handleUpdateBeer(beer.name, 'quantity', Number(e.target.value))}
+              onChange={(e) => handleUpdateBeer(beer.name, 'quantity', e.target.value)}
               className="w-20 p-1 border rounded"
             />
           </div>
