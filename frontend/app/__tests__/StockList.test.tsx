@@ -17,7 +17,7 @@ const mockStock = {
 };
 
 describe('StockList', () => {
-  it('renders stock list correctly', () => {
+  it('renders stock list', () => {
     render(
       <Provider initialValues={[[stockAtom, mockStock]]}>
         <StockList />
