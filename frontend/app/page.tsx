@@ -1,55 +1,56 @@
-"use client";
+"use client"
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { stockAtom, currentOrderAtom, orderIdAtom } from './lib/atoms';
+import { getStock, getOrder, createOrder } from './lib/api';
+import OrderSummary from './components/OrderSummary';
+import AddRound from './components/AddRound';
+import Link from 'next/link';
 
-import React, { useState, useEffect } from "react";
-import { getStock, Stock, getOrder, Order } from "./lib/api";
-import StockList from "./components/StockList";
-import OrderForm from "./components/OrderForm";
-import OrderDetails from "./components/OrderDetails";
-
-const Home: React.FC = () => {
-  const [stock, setStock] = useState<Stock | null>(null);
-  const [order, setOrder] = useState<Order | null>(null);
-
-  const fetchStock = async () => {
-    try {
-      const stockData = await getStock();
-      setStock(stockData);
-    } catch (error) {
-      console.error("Error on fetch stock:", error);
-    }
-  };
+export default function CurrentOrder() {
+  const [stock, setStock] = useAtom(stockAtom);
+  const [currentOrder, setCurrentOrder] = useAtom(currentOrderAtom);
+  const [orderId, setOrderId] = useAtom(orderIdAtom);
 
   useEffect(() => {
-    fetchStock();
-  }, []);
+    const fetchData = async () => {
+      try {
+        if (!stock) {
+          const stockData = await getStock();
+          setStock(stockData);
+        }
 
-  const handleOrderCreated = async (orderId: number) => {
-    try {
-      const orderData = await getOrder(orderId);
-      setOrder(orderData);
-    } catch (error) {
-      console.error("Error on fetch order:", error);
-    }
-  };
+        if (!orderId) {
+          const newOrderId = await createOrder();
+          setOrderId(newOrderId);
+        }
+
+        if (orderId) {
+          const orderData = await getOrder(orderId);
+          setCurrentOrder(orderData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+
+    fetchData();
+  }, [stock, orderId, setStock, setOrderId, setCurrentOrder]);
 
   return (
-    <div className="max-w-7xl py-6 mx-auto sm:px-6 lg:px-8">
-      <div className="px-4 py-6 sm:px-0">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Beer Orders
-        </h1>
-        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2">
-          <div>
-            {stock && <StockList stock={stock} onStockUpdate={fetchStock} />}
-          </div>
-          <div>
-            <OrderForm onOrderCreated={handleOrderCreated} />
-            {order && <OrderDetails order={order} />}
-          </div>
+    <div className="space-y-8">
+      <Link href="/stock-list" className="text-blue-500 hover:underline">
+        Go to Stock List
+      </Link>
+      <h1 className="text-3xl font-bold">Current Order</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <OrderSummary />
+        </div>
+        <div>
+          <AddRound />
         </div>
       </div>
     </div>
   );
-};
-
-export default Home;
+}

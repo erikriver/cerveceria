@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from "next-themes"
+import { Provider } from 'jotai';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,12 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-background text-foreground`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
+        <Provider>
           <div className="min-h-screen flex flex-col">
             <header className="bg-white shadow-sm">
               <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
@@ -41,7 +36,7 @@ export default function RootLayout({
               </div>
             </footer>
           </div>
-        </ThemeProvider>
+        </Provider>
       </body>
     </html>
   )
