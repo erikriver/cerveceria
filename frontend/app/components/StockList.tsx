@@ -1,4 +1,3 @@
-// components/StockList.tsx
 import React from 'react';
 import { useAtom } from 'jotai';
 import { stockAtom } from '../lib/atoms';
@@ -44,12 +43,16 @@ const StockList: React.FC = () => {
               value={beer.price}
               onChange={(e) => handleUpdateBeer(beer.name, 'price', e.target.value)}
               className="w-20 mr-2 p-1 border rounded"
+              data-testid={`price-input-${beer.name}`}
+              aria-label={`Price for ${beer.name}`}
             />
             <input
               type="number"
               value={beer.quantity}
               onChange={(e) => handleUpdateBeer(beer.name, 'quantity', e.target.value)}
               className="w-20 p-1 border rounded"
+              data-testid={`quantity-input-${beer.name}`}
+              aria-label={`Quantity for ${beer.name}`}
             />
           </div>
         </div>

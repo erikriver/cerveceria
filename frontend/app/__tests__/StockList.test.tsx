@@ -1,23 +1,56 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import StockList from "../components/StockList";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Provider } from 'jotai';
+import StockList from '../components/StockList';
+import { stockAtom } from '../lib/atoms';
+
+jest.mock('../lib/api', () => ({
+  updateBeer: jest.fn(() => Promise.resolve({ name: 'Corona', price: 120, quantity: 50 })),
+}));
 
 const mockStock = {
-  last_updated: "2024-09-27T10:11:00Z",
+  last_updated: new Date().toISOString(),
   beers: [
-    { name: "Corona", price: 110, quantity: 120 },
-    { name: "Strella", price: 120, quantity: 80 },
+    { name: 'Corona', price: 100, quantity: 50 },
+    { name: 'Heineken', price: 110, quantity: 30 },
   ],
 };
 
-describe("StockList", () => {
-  it("Stock information correctly", () => {
-    render(<StockList stock={mockStock} onStockUpdate={() => {}} />);
+describe('StockList', () => {
+  it('renders stock list correctly', () => {
+    render(
+      <Provider initialValues={[[stockAtom, mockStock]]}>
+        <StockList />
+      </Provider>
+    );
 
-    expect(screen.getByText("Stock")).toBeInTheDocument();
-    expect(screen.getByText("Corona")).toBeInTheDocument();
-    expect(screen.getByText("Strella")).toBeInTheDocument();
-    expect(screen.getByText("Price: $110")).toBeInTheDocument();
-    expect(screen.getByText("Quantity: 120")).toBeInTheDocument();
+    expect(screen.getByText('Corona')).toBeInTheDocument();
+    expect(screen.getByText('Heineken')).toBeInTheDocument();
+  });
+
+  it('updates beer price when input changes', async () => {
+    render(
+      <Provider initialValues={[[stockAtom, mockStock]]}>
+        <StockList />
+      </Provider>
+    );
+
+    const priceInput = screen.getByTestId('price-input-Corona');
+    fireEvent.change(priceInput, { target: { value: '120' } });
+
+    expect(priceInput).toHaveValue(120);
+  });
+
+  it('updates beer quantity when input changes', async () => {
+    render(
+      <Provider initialValues={[[stockAtom, mockStock]]}>
+        <StockList />
+      </Provider>
+    );
+
+    const quantityInput = screen.getByTestId('quantity-input-Corona');
+    fireEvent.change(quantityInput, { target: { value: '60' } });
+
+    expect(quantityInput).toHaveValue(60);
   });
 });
